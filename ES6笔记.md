@@ -485,7 +485,7 @@ const {o = 2} = {o: null};
 console.log(o)    // null
 ```
 
-### 3.3、字符串的解构赋值
+### 2.3、字符串的解构赋值
 
 ```
 const {log} = console;
@@ -496,7 +496,7 @@ const { length: len } = 'Hello';
 log(len);   // 5
 ```
 
-### 3.4、数值和布尔值的解构赋值
+### 2.4、数值和布尔值的解构赋值
 
 解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。
 
@@ -520,7 +520,7 @@ let {prop: b} = null;
 console.log(b);   // TypeError: Cannot destructure property `prop` of 'undefined' or 'null'.
 ```
 
-### 3.5、函数参数的解构赋值
+### 2.5、函数参数的解构赋值
 
 ```
 const {log: print} = console;
@@ -546,6 +546,133 @@ print(move())     // 0
 [1, undefined, 3].map((x = 'yes') => x);  // [ 1, 'yes', 3 ]
 ```
 
+### 2.6、圆括号的问题
+
+只要有可能导致解构的歧义，就不得使用圆括号。
+
+- **不得使用圆括号的情况**
+
+  1、变量声明语句
+
+  2、函数参数
+
+  3、赋值语句的模式
+
+  案例参考如下：
+
+  ```
+  // 1、变量声明语句，全部报错
+  let [(a)] = [1];
+  
+  let {x: (c)} = {};
+  let ({x: c}) = {};
+  let {(x: c)} = {};
+  let {(x): c} = {};
+  
+  let { o: ({ p: p }) } = { o: { p: 2 } };
+  
+  // 2、函数参数（报错）
+  function f([(z)]) {return z;}
+  function f([z,(x)]) { return x; }
+  
+  3、赋值语句模式
+  ({ p: a }) = { p: 42 };
+  ([a]) = [5];
+  [({ p: a }), { x: c }] = [{}, {}];
+  ```
+
+- ***可以使用圆括号的情况***
+
+  只有一种：赋值语句的非模式部分可以使用圆括号
+
+  ```
+  [(b)] = [3]; // 正确
+  ({ p: (d) } = {}); // 正确
+  [(parseInt.prop)] = [3]; // 正确
+  ```
+
+  ### 2.7、用途
+
+  - **交换变量的值**
+
+    ```
+    let x = 1;
+    let y = 2;
+    
+    [x, y] = [y, x];
+    console.log(x, y);  // 2 1
+    ```
+
+  - **从函数返回多个值**
+
+    ```
+    function example() {
+      return [1, 2, 3];
+    }
+    let [a, b, c] = example();
+    console.log(a, b, c);   // 1 2 3
+    
+    // 返回一个对象
+    function example1() {
+      return {
+        foo: 1,
+        bar: 2
+      };
+    }
+    let { foo, bar } = example1();
+    console.log(foo, bar);  // 1 2
+    ```
+
+  - **函数参数的定义**
+
+    ```
+    // 参数是一组有次序的值
+    function f([x, y, z]) { ... }
+    f([1, 2, 3]);
+    
+    // 参数是一组无次序的值
+    function f({x, y, z}) { ... }
+    f({z: 3, y: 2, x: 1});
+    ```
+
+  - **提取JSON数据**
+
+    ```
+    let jsonData = {
+      id: 42,
+      status: "OK",
+      data: [867, 5309]
+    };
+    
+    let { id, status, data: number } = jsonData;
+    
+    console.log(id, status, number);
+    // 42, "OK", [867, 5309]
+    ```
+
+  - **函数参数的默认值**
+
+  - **遍历Map结构**
+
+    ```
+    const map = new Map();
+    map.set('first', 'hello');
+    map.set('second', 'world');
+    
+    for (let [key, value] of map) {
+      console.log(key + " is " + value);
+    }
+    // first is hello
+    // second is world
+    ```
+
+  - **输入模块的指定方法**
+
+    ```
+    import React, {Component} from 'react';
+    ```
+
+    ## 4、字符串的扩展
 
 
 
