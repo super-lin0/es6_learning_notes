@@ -794,6 +794,45 @@ $('#list').html(`
 
 ### 4.1、RegExp构造函数
 
+ES5中，RegExp构造函数的参数有两种情况:
+
+- 参数是字符串，这时第二个参数表示正则表达式的修饰符(flag);
+
+  ```
+  var regex = new RegExp('xyz', 'i');
+  // 等同于
+  var regex = /xyz/i;
+  var str = 'xyz';
+  
+  console.log(regex.test(str));	// true
+  ```
+
+- 参数是一个正则表达式，这时会返回一个原有正则表达式的拷贝
+
+  ```
+  var regx1 = new RegExp(/xyz/i);
+  // 等同于
+  var regx1 = /xyz/i;
+  console.log(regx1.test(str));   // true
+  ```
+
+  **Notes**
+
+  ES5不允许此时使用第二个参数添加修饰符，否则会报错。
+
+  ```
+  var regex = new RegExp(/xyz/, 'i');
+  // Uncaught TypeError: Cannot supply flags when constructing one RegExp from another
+  ```
+
+  ES6:如果RegExp构造函数第一个参数是一个正则表达式对象，那么可以使用第二个参数指定修饰符。而且，返回的正则表达式会忽略原有的正则表达式的修饰符，只使用新指定的修饰符。
+
+  ```
+  var regex1 = new RegExp(/xyz/ig, 'i');
+  console.log(regex1.flags);    // i
+  ```
+
+
 
 
 
