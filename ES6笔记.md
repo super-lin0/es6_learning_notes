@@ -522,6 +522,32 @@ console.log(b);   // TypeError: Cannot destructure property `prop` of 'undefined
 
 ### 3.5、函数参数的解构赋值
 
+```
+const {log: print} = console;
+
+function add([x, y]) {
+  return x + y;
+}
+
+print(add([1, 2]));   // 3
+
+print([[1,2], [3, 4]].map(([x, y]) => x + y));    // [ 3, 7 ]
+
+//默认参数的例子
+function move({x = 0, y = 0} = {}) {
+  return x + y;
+};
+
+print(move({x: 1, y: 3}));    // 4
+print(move({x: 1}))     // 1
+print(move({}))     // 0
+print(move())     // 0
+
+[1, undefined, 3].map((x = 'yes') => x);  // [ 1, 'yes', 3 ]
+```
+
+
+
 
 
 
