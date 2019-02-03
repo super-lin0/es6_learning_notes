@@ -498,6 +498,30 @@ log(len);   // 5
 
 ### 3.4、数值和布尔值的解构赋值
 
+解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。
+
+```
+let {toString: s} = 123;
+console.log(s === Number.prototype.toString);   // true
+
+let {toString: b} = true;
+console.log(b === Boolean.prototype.toString);  // true
+```
+
+***Notes***
+
+解构赋值的规则是，只要等号右边的值不是对象或数组，就先将其转换为对象。（undefined和null无法转换为对象，直接报错）。
+
+```
+let {prop: a} = undefined;
+console.log(a);   // TypeError: Cannot destructure property `prop` of 'undefined' or 'null'.
+
+let {prop: b} = null;
+console.log(b);   // TypeError: Cannot destructure property `prop` of 'undefined' or 'null'.
+```
+
+### 3.5、函数参数的解构赋值
+
 
 
 
