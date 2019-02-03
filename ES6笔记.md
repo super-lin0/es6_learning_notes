@@ -730,12 +730,41 @@ print('na'.repeat(Infinity));   // RangeError: Invalid count value
 print('na'.repeat(-1));   // RangeError: Invalid count value
 ```
 
-### 4.9 、padStart()、padEnd()
+### 3.4 、padStart()、padEnd()
 
 ES2017引入了字符串补齐全长度的功能：如果某个字符串不够指定长度，会在头部或尾部补全。
 
 - padStart() 用于头部补全
 - padEnd()哟关于尾部补全
+
+```
+print('x'.padStart(5, 'ab'));   // ababx
+print('x'.padStart(4, 'ab'));   // abax
+print('xxxxx'.padStart(4, 'ab'));   // xxxxx
+print('xx'.padStart(4, 'abc'));   // abxx
+print('x'.padEnd(4, 'ab'));   // xaba
+print('x'.padEnd(5, 'ab'));   // xabab
+print('xx'.padEnd(4, 'abc'));   // xxab
+```
+
+***Notes***
+
+padStart常见用途：1、为数值补全指定位数；2、提示字符串格式
+
+```
+print('1'.padStart(10, 0));   // 0000000001
+print('12'.padStart(10, 0));  // 0000000012
+print('123456'.padStart(10, 0));  // 0000123456
+
+print('12'.padStart(10, 'YYYY-MM-DD'));   // YYYY-MM-12
+print('09-12'.padStart(10, 'YYYY-MM-DD'));  // YYYY-09-12
+```
+
+### 3.5、模板字符串
+
+
+
+
 
 
 
