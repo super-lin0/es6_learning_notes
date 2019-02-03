@@ -487,7 +487,16 @@ console.log(o)    // null
 
 ### 3.3、字符串的解构赋值
 
+```
+const {log} = console;
+const [a, b, c, d, e] = 'Hello';
+log(a, b, c, d, e);   // H e l l o
 
+const { length: len } = 'Hello';
+log(len);   // 5
+```
+
+### 3.4、数值和布尔值的解构赋值
 
 
 
