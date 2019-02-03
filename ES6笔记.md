@@ -832,6 +832,14 @@ ES5中，RegExp构造函数的参数有两种情况:
   console.log(regex1.flags);    // i
   ```
 
+### 4.2、字符串的正则方法
+
+字符串对象共有4个方法可以使用正则表达式：matchs()、replace()、search()、split()。ES6使这4个方法在语言内部全部调用RegExp的实例方法，从而做奥所有与正则相关的方法都定义在RegExp对象上。
+
+- `String.prototype.match` 调用 `RegExp.prototype[Symbol.match]`
+- `String.prototype.replace` 调用 `RegExp.prototype[Symbol.replace]`
+- `String.prototype.search` 调用 `RegExp.prototype[Symbol.search]`
+- `String.prototype.split` 调用 `RegExp.prototype[Symbol.split]`
 
 
 
