@@ -672,7 +672,79 @@ print(move())     // 0
     import React, {Component} from 'react';
     ```
 
-    ## 4、字符串的扩展
+## 3、字符串的扩展
+
+### 3.1、字符串的遍历接口
+
+ES6 为字符串添加了遍历器接口，使得字符串可以被for...of循环遍历
+
+```
+const s = 'foo';
+for(let a of s) {
+  console.log(a);
+}
+```
+
+### 3.2、includes(), startsWith(), endsWith()
+
+用来确定一个字符串是否包含在另一个字符串中：
+
+- indexOf
+- includes()  返回布尔值，表示是否找到了参数字符串
+- startsWith()  返回布尔值，表示参数字符串是否在源字符串头部
+- endsWith()  返回布尔值，表示参数字符串是否在源字符串的尾部
+
+```
+const str = 'Hello Worls';
+
+console.log(str.startsWith('Hello'));   // true
+console.log(str.startsWith('hello'));   // false
+console.log(str.endsWith('ls'));    // true
+console.log(str.includes('o W'));   // true
+
+console.log(str.startsWith('Hello', 1));   // false
+console.log(str.endsWith('He', 2));    // true	(针对前n个字符)
+console.log(str.includes('o W', 5));   // false
+```
+
+***Notes***
+
+第二个参数表示开始搜索的位置
+
+### 3.3、repeat()
+
+repeat()方法返回一个新字符串，表示将原字符串重复n次
+
+```
+const {log: print} = console;
+
+print('*'.repeat(2));   // **
+print('hello'.repeat(2));   // hellohello
+print('na'.repeat(0));  // ''
+print('na'.repeat(2.9));  // nana
+print('na'.repeat(-0.9));  // ''(0到-1之间取0)
+print('na'.repeat(NaN));  // '' 等同于0
+print('na'.repeat('na')); // ''
+print('na'.repeat('3')); // nanana
+print('na'.repeat(Infinity));   // RangeError: Invalid count value
+print('na'.repeat(-1));   // RangeError: Invalid count value
+```
+
+### 4.9 、padStart()、padEnd()
+
+ES2017引入了字符串补齐全长度的功能：如果某个字符串不够指定长度，会在头部或尾部补全。
+
+- padStart() 用于头部补全
+- padEnd()哟关于尾部补全
+
+
+
+
+
+
+
+
+
 
 
 
