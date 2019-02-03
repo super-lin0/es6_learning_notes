@@ -90,7 +90,7 @@ a[6]();		//6
 
    总之，在代码块内，只用let命令声明变量之前，该变量都是不可用的。这在语法上称为“暂时性死区”（TDZ）。
 
-   本质:
+   **本质**
 
    ​	只要进入当前作用域，所要使用的变量就已经存在，但是不可获取，只有等到声明变量的那一行代码出现，
 
@@ -185,7 +185,7 @@ a[6]();		//6
 
   3、函数声明还会提升到所在块级作用域的头部。
 
-  notes:
+  **Notes**
 
   1、块级作用域允许声明函数的规则只在使用大括号的情况下成立，
 
@@ -283,7 +283,7 @@ let b = 1;
 console.log(window.b);  // undefined
 ```
 
-Note:
+**Notes**
 
 ​	ES6一方面规定，为了保持兼容性，var命令和function命令声明的全局变量依旧是顶层对象的属性；另一方面规定，let、const、class命令声明的全局变量不属于顶层对象的属性。
 
@@ -292,5 +292,109 @@ Note:
 ### 2.1、数组的解构赋值
 
 - **基本用法**
+
+解构赋值：按照一定模式从数组和对象中提取值，然后对变量进行赋值
+
+```
+let [a, b, c] = [1, 2, 3];
+```
+
+```
+let [foo, [[bar], baz]] = [1, [[2], 3]];
+foo // 1
+bar // 2
+baz // 3
+
+let [ , , third] = ["foo", "bar", "baz"];
+third // "baz"
+
+let [x, , y] = [1, 2, 3];
+x // 1
+y // 3
+
+let [head, ...tail] = [1, 2, 3, 4];
+head // 1
+tail // [2, 3, 4]
+
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
+```
+
+不完全解构的例子：
+
+```
+let [x, y] = [1, 2, 3];
+console.log(x);   // 1
+console.log(y);   // 2
+
+let [a, [b], d] = [1, [2, 3], 4];
+console.log(a);   // 1
+console.log(b);   // 2
+console.log(d);   // 4
+```
+
+**Notes**
+
+只要某种数据结构具有Iterator接口，都可以采用解构赋值
+
+```
+function* fibs() {
+  let a = 0;
+  let b = 1;
+  while(true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+let [first, second, third, fourth, fifth, sixth] = fibs();
+console.log(sixth);   // 5
+```
+
+Generator函数具有原生的Iterator接口。
+
+- **默认值**
+
+  解构赋值允许指定默认值
+
+  ```
+  let [foo = true] = [];
+  console.log(foo);   // true
+  
+  let [x, y = 'b'] = ['a'];
+  console.log(x, y);    // a b
+  
+  let [e, f = 'b'] = ['a', undefined];
+  console.log(e, f);    // a b
+  
+  let [g = 1] = [null];
+  console.log(g);   // null
+  
+  function baz() {
+    console.log('hahah');
+  }
+  
+  let [h = baz()] = [1];
+  console.log(h);   // 1
+  
+  let [j = 1, k = j] = [];
+  console.log(j, k);  // 1 1
+  
+  let [m = n, n = 1] = [];
+  console.log(m, n);  // ReferenceError: n is not defined
+  ```
+
+  **Notes**
+
+  1、ES6内部使用严格相等运算符（===）判断一个位置是否有值，所以，如果一个数组成员不严格等于undefined,默认值是不会生效的。
+
+  2、如果默认值是一个表达式，那么这个表达式是惰性求值的，即只有在用到是才会求值。
+
+  3、默认值可以引用解构赋值的其他变量，但该变量必须已经声明。
+
+### 2.2、对象的解构赋值
+
 
 
