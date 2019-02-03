@@ -4,6 +4,8 @@ typora-copy-images-to: imgs
 
 # ES6标准入门
 
+[TOC]
+
 
 
 ## 1、let 和const
