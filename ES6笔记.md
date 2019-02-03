@@ -226,5 +226,52 @@ a[6]();		//6
 
   const声明一个只读的常量。一旦声明，常量的值就不能改变。
 
+  1、const声明的常量不得改变值
+
+  2、一旦声明常量，就必须立即初始化，不能留到以后赋值
+
+  3、作用域与let命令相同：只在声明所在的块级作用域内有效（不会提升，同样存在暂时性死区，只能在声明后使用；不可重复声明）
+
+  ```
+  const PI = 3.1415;
+  console.log(PI); // 3.1415
+  ```
+
+- **本质**
+
+  const实际上保证的并不是变量的值不得改动，而是变量指向的那个内存地址不得改动。
+
+  简单类型（数值、字符串、布尔值），值就保存在变量指向的内存地址中，因此等同于常量
+
+  复合类型（对象和数组）：变量指向的内存地址保存的是一个指针，const只能保证这个指针是固定的，它指向的数据结构是可变的。
+
+  ```
+  const obj = {};
+  
+  obj.name = 'Jack';
+  console.log(obj);   //{ name: 'Jack' }
+  
+  obj = [];   // TypeError: Assignment to constant variable.
+  ```
+
+  将对象本身以及对象的属性冻结的例子：
+
+  ```
+  var constantize = (obj) => {
+    Object.freeze(obj);
+    Object.keys(obj).forEach( (key, i) => {
+      if ( typeof obj[key] === 'object' ) {
+        constantize( obj[key] );
+      }
+    });
+  };
+  ```
+
+- **ES6声明变量的6种方法**
+
+  var、function、let、const、import、class
+
+### 1.4、顶层对象的属性
+
 
 
