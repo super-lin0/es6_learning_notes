@@ -55,5 +55,11 @@ a[6]();		//6
 
 - 不存在变量提升
 
+  var命令会存在“变量提升”现象，即变量可以在声明之前使用，值为undefined。
+
+  let命令改变了语法行为，它所声明的变量一定要在声明之后使用：
+
+  ![变量提升](F:\projects\script-user\es6_learning_notes\imgs\变量提升.jpg)
+
 
 ​	
