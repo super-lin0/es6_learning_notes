@@ -66,7 +66,7 @@ a[6]();		//6
 
   let命令改变了语法行为，它所声明的变量一定要在声明之后使用：
 
-  ![变量提升](F:\projects\script-user\es6_learning_notes\imgs\变量提升.jpg)
+  ![变量提升](imgs/变量提升.jpg)
 
  - **暂时性死区**
 
