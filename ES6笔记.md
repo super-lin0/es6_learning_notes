@@ -396,5 +396,100 @@ Generator函数具有原生的Iterator接口。
 
 ### 2.2、对象的解构赋值
 
+数组元素是按照次序排列的，变量的取值由它的位置决定的；而对象的属性没有次序，变量必须与属性同名才能取到正确的值。
+
+```
+let { foo, bar } = { bar: 'bbb', foo: 'aaa' };
+console.log(foo, bar);    // aaa bbb
+
+let { baz } = { foo: 'aaa', bar: 'bbb'};
+console.log(baz);   // undefined
+
+//变量名与属性名不一样的情况
+let { foo: baz } = { foo: 'aaa', bar: 'bbb'};
+console.log(baz);   // aaa
+
+const obj = { first: 'Hello', last: 'world' };
+let { first: f, last: l } = obj;
+console.log(f, l);    // Hello world
+```
+
+可以看出，对象的解构赋值的内部机制是先找到同名的属性，然后再赋值给对应的变量。真正被赋值的是后者，而不是前者。
+
+嵌套结构对象的解构赋值
+
+```
+const obj1 = {
+  p: [
+    'Hello',
+    {y: 'World'}
+  ]
+};
+let {p: [x, {y}]} = obj1;
+console.log(x, y);    // Hello World
+
+let {p, p: [a, {y: b}]} = obj1;
+console.log(p, a, b); // [ 'Hello', { y: 'World' } ] 'Hello' 'World'
+
+// 这个例子稍微复杂一点，但也不难理解
+const node = {
+  loc: {
+    start: {
+      line: 1,
+      column: 3
+    }
+  }
+}
+const {loc, loc: {start}, loc: {start: {line}}} = node;
+console.log(loc, start, line);    // { start: { line: 1, column: 3 } } { line: 1, column: 3 } 1
+```
+
+嵌套赋值的例子：
+
+```
+let obj2 = {};
+let arr = [];
+
+({ foo: obj2.prop, bar: arr[0] } = { foo: 123, bar: true });
+console.log(obj2, arr);   // { prop: 123 } [ true ]
+```
+
+对象解构也支持默认值：
+
+```
+var {g = 3} = {};
+console.log(g) // 3
+
+var {h, i = 5} = {h: 1};
+console.log(h) // 1
+console.log(i) // 5
+
+var {j: k = 3} = {};
+console.log(k) // 3
+
+var {l: m = 3} = {l: 5};
+console.log(m) // 5
+
+var { message: msg = 'Something went wrong' } = {};
+console.log(msg) // "Something went wrong"
+```
+
+***Notes***
+
+默认值生效的条件是，对象属性值严格等于undefined
+
+```
+const {n = 3} = {n: undefined};
+console.log(n);   // 3
+const {o = 2} = {o: null};
+console.log(o)    // null
+```
+
+### 3.3、字符串的解构赋值
+
+
+
+
+
 
 
