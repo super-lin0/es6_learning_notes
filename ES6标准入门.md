@@ -1,4 +1,5 @@
 ---
+[MENU]
 typora-copy-images-to: imgs
 ---
 
