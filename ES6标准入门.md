@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: imgs
+---
+
 # ES6标准入门
 
 
