@@ -931,6 +931,90 @@ console.log(re.dotAll);   // true
 console.log(re.flags);    // s
 ```
 
+### 4.6、具名组匹配
+
+- ***简介***
+
+正则表达式使用圆括号进行组匹配。
+
+```
+const RE_DATE = /(\d{4})-(\d{2})-(\d{2})/;
+const matchDate = RE_DATE.exec('2019-01-01');
+
+console.log(matchDate);     
+// [ '2019-01-01', '2019', '01', '01', index: 0, input: '2019-01-01', groups: undefined ]
+console.log(matchDate[1]);
+console.log(matchDate[2]);
+console.log(matchDate[3]);
+```
+
+组匹配的问题：每一组匹配的含义不容易看出来，而且只能用数字序号引用。
+
+具名组匹配：允许为每一个组匹配指定一个名字。
+
+```
+const RE_DATE = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/;
+const matchDate = RE_DATE.exec('2019-01-01');
+const matchObj = matchDate.groups || {}
+
+console.log(matchDate[1])    // 2019
+console.log(matchObj.year);  // 2019
+console.log(matchObj.month); // 01
+console.log(matchObj.day);   // 01
+```
+
+
+
+- ***解构赋值和替换***
+
+  ```
+  let {groups: {one, two}} = /^(?<one>.*):(?<two>.*)$/u.exec('foo:bar');
+  
+  console.log(one);   // foo
+  console.log(two);   // bar
+  
+  // 字符串替换时，使用$<组名>来引用具组名
+  let re1 = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u;
+  console.log('2015-01-02'.replace(re1, '$<day>/$<month>/$<year>'));  // 02/01/2015
+  
+  const re_date = '2015-01-02'.replace(re1, (
+    matched, // 整个匹配结果 2015-01-02
+    capture1, // 第一个组匹配 2015
+    capture2, // 第二个组匹配 01
+    capture3, // 第三个组匹配 02
+    position, // 匹配开始的位置 0
+    S, // 原字符串 2015-01-02
+    groups // 具名组构成的一个对象 {year, month, day}
+  ) => {
+  	let {day, month, year} = groups;
+  	return `${day}/${month}/${year}`;
+  });
+  
+  console.log(re_date);   // 02/01/2015
+  ```
+
+- **引用**
+
+  如果正则表达式内部引用某个“具名组匹配”，可以使用``\k<组名>``、``\1`` 的写法
+
+  ```
+  const RE_TWICE = /^(?<word>[a-z]+)!\k<word>$/;
+  
+  console.log(RE_TWICE.test('abc!abc'));  // true
+  console.log(RE_TWICE.test('abc!abe'));  // false
+  
+  const RE_TWICE = /^(?<word>[a-z]+)!\1$/;
+  
+  console.log(RE_TWICE.test('abc!abc'));  // true
+  console.log(RE_TWICE.test('abc!abe'));  // false
+  
+  const RE_TWICE = /^(?<word>[a-z]+)!\k<word>!\1$/;
+  
+  console.log(RE_TWICE.test('abc!abc!abc'));  // true
+  console.log(RE_TWICE.test('abc!abc!abe'));  // false
+  ```
+
+
 
 
 
