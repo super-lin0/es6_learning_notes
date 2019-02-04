@@ -1014,6 +1014,160 @@ console.log(matchObj.day);   // 01
   console.log(RE_TWICE.test('abc!abc!abe'));  // false
   ```
 
+## 5、数值的扩展
+
+### 5.1、二进制和八进制表示法
+
+ES6提供了二进制和八进制数值的新的写法，分别用前缀``0b``或``0B``和``0o``或``0O``表示。
+
+```
+console.log(0b110011);    // 51
+console.log(0o767);     // 503
+
+// 将二进制和八进制字符串数值转换为十进制数值
+console.log(Number('0b111'));   // 7
+console.log(Number('0o10'));    // 8
+```
+
+### 5.2、Number.isFinite()、Number.isNaN()
+
+- Number.isFinite()用来检查一个数值是否为有限的(finite)。
+- Number.isNaN()用来检查一个值是否为NaN。
+
+```
+console.log(Number.isFinite(15)); // true
+console.log(Number.isFinite(0.8)); // true
+console.log(Number.isFinite(NaN)); // false
+console.log(Number.isFinite(Infinity)); // false
+console.log(Number.isFinite(-Infinity)); // false
+console.log(Number.isFinite('foo')); // false
+console.log(Number.isFinite('15')); // false
+console.log(Number.isFinite(true)); // false
+
+console.log(Number.isNaN(NaN)); // true
+console.log(Number.isNaN(15)); // false
+console.log(Number.isNaN('15')); // false
+console.log(Number.isNaN(true)); // false
+console.log(Number.isNaN(9/NaN)); // true
+console.log(Number.isNaN('true' / 0)); // true
+console.log(Number.isNaN('true' / 'true')); // true
+```
+
+### 5.3、Number.parseInt()、Number.parseFloat()
+
+ES6 将全局方法`parseInt()`和`parseFloat()`，移植到`Number`对象上面，行为完全保持不变。
+
+```
+// ES5的写法
+parseInt('12.34') // 12
+parseFloat('123.45#') // 123.45
+
+// ES6的写法
+Number.parseInt('12.34') // 12
+Number.parseFloat('123.45#') // 123.45
+
+Number.parseInt === parseInt // true
+Number.parseFloat === parseFloat // true
+```
+
+***Notes***
+
+这样做的目的是，逐步减少全局方法，使得语言逐步模块化。
+
+### 5.4、Number.isInteger()
+
+Number.isInteger()用来判断一个值是否为整数。（注意：在JavaScript内部，整数和浮点数是同样的存储方式，因此3和3.0被视为同一个值）。
+
+```
+console.log(Number.isInteger(3));   // true
+console.log(Number.isInteger(3.0)); // true
+console.log(Number.isInteger('3')); // false
+console.log(Number.isInteger(25.1));  // false
+console.log(Number.isInteger());    // false
+console.log(Number.isInteger(null));  // false
+console.log(Number.isInteger(true));  // false
+// 小数的精度达到了小数点后16位，转换成二进制超过了53个二进制位，导致最后的2丢失
+console.log(Number.isInteger(3.0000000000000002)); // true
+
+// 如果一个数值的绝对值小于Number.MIN_VALUE（5E-324），即小于 JavaScript 能够分辨的最小值，会被自动转为 0
+console.log(Number.isInteger(5E-324)); // false
+console.log(Number.isInteger(5E-325)); // true
+```
+
+**Notes**
+
+鉴于以上两种情况，如果对数据精度要求较高，不建议使用``Number.isInteger()``来判断一个数是否是整数。
+
+### 5.5、Number.EPSILON
+
+ES6在Number对象上面新增一个极小的常量``Number.EPSILON``，目的在于为浮点数计算设置一个误差范围，我们知道浮点数计算是不精确的。但是如果这个误差能够小于``Number.EPSILON``，我们就可以认为得到了正确结果。因此，``Number.EPSILON``的实质是一个可接受的误差范围。
+
+```
+console.log(Number.EPSILON);    // 2.220446049250313e-16
+console.log(0.1 + 0.2);   // 0.30000000000000004
+console.log(0.1 + 0.2 - 0.3);   // 5.551115123125783e-17
+console.log(5.551115123125783e-17 < Number.EPSILON);    // true
+
+function withErrorMargin (left, right) {
+  return Math.abs(left - right) < Number.EPSILON;
+}
+
+console.log(withErrorMargin(0.1 + 0.2, 0.3));   // true
+console.log(withErrorMargin(0.2 + 0.2, 0.3));   // false
+```
+
+### 5.6、安全整数和``Number.isSafeInteger()``
+
+JavaScript能够准确表示的整数范围在``-2^52``到``2^53``之间（不含两个端点），超出这个范围就无法精确表示。
+
+```
+console.log(Math.pow(2, 53));   // 9007199254740992
+console.log(9007199254740992);  // 9007199254740992
+console.log(9007199254740993);  // 9007199254740992
+console.log(Math.pow(2, 53) === Math.pow(2, 53) + 1);   // 9007199254740992
+```
+
+ES6引入了``Number.MIN_SAFE_INTEGER``和``Number.MAX_SAFE_INTEGER``两个常量用来表示这个范围的上下极限。
+
+```
+console.log(Number.MAX_SAFE_INTEGER === Math.pow(2, 53) - 1);   // true
+console.log(Number.MAX_SAFE_INTEGER === -Number.MIN_SAFE_INTEGER);  // true
+console.log(Number.MAX_SAFE_INTEGER === 9007199254740991);  // true
+```
+
+``Number.isSafeInteger()``用来判断一个整数是否落在这个范围之内。
+
+```
+console.log(Number.isSafeInteger('a')); // false
+console.log(Number.isSafeInteger(null)); // false
+console.log(Number.isSafeInteger(NaN)); // false
+console.log(Number.isSafeInteger(Infinity)); // false
+console.log(Number.isSafeInteger(-Infinity)); // false
+
+console.log(Number.isSafeInteger(3)); // true
+console.log(Number.isSafeInteger(1.2)); // false
+console.log(Number.isSafeInteger(9007199254740990)); // true
+console.log(Number.isSafeInteger(9007199254740992)); // false
+
+console.log(Number.isSafeInteger(Number.MIN_SAFE_INTEGER - 1)); // false
+console.log(Number.isSafeInteger(Number.MIN_SAFE_INTEGER)); // true
+console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER)); // true
+console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1)); // false
+```
+
+**Notes**
+
+实际使用这个函数时，需要注意验证运算结果是否安全落在安全整数的范围内，另外不只验证运算结果，还要同时验证参与运算的每个值。
+
+
+
+
+
+
+
+
+
+
 
 
 
