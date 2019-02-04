@@ -918,6 +918,19 @@ console.log(/abc/ig.flags);     // gi(ES6的flags属性，返回正则表达式�
 console.log(/abc/ig.source);    // abc(ES5的source属性，返回正则表达式的修饰符)
 ```
 
+### 4.6、s修饰符
+
+ES2018引入/s修饰符，使得.可以匹配任意单个字符。这被称为dotAll模式，即点代表一切字符。
+
+```
+const re = /foo.bar/s;
+// const re = new RegExp('foo.bar', 's');
+
+console.log(re.test('foo\nbar'));   // true
+console.log(re.dotAll);   // true
+console.log(re.flags);    // s
+```
+
 
 
 
