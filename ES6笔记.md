@@ -841,6 +841,89 @@ ES5中，RegExp构造函数的参数有两种情况:
 - `String.prototype.search` 调用 `RegExp.prototype[Symbol.search]`
 - `String.prototype.split` 调用 `RegExp.prototype[Symbol.split]`
 
+### 4.3、y修饰符
+
+ES6为正则表达式添加了y修饰符，叫做“粘连”（sticky）修饰符。作用与g修饰符类似，也是全局匹配，后一次匹配都从上一个匹配成功的下一个位置开始。不同之处在于，g修饰符只要剩余未之中存在匹配就行，而y修饰符会确保匹配必须从剩余的第一个位置开始，这也就是“粘连”的含义。
+
+```
+var s = 'aaa_aa_a';
+var r1 = /a+/g;
+var r2 = /a+/y;
+var r3 = /a+_/y;
+
+console.log(r1.exec(s));    // [ 'aaa', index: 0, input: 'aaa_aa_a', groups: undefined ]
+console.log(r1.exec(s));    // [ 'aa', index: 4, input: 'aaa_aa_a', groups: undefined ]
+console.log(r1.exec(s));    // [ 'a', index: 7, input: 'aaa_aa_a', groups: undefined ]
+
+console.log(r2.exec(s));    // [ 'aaa', index: 0, input: 'aaa_aa_a', groups: undefined ]
+console.log(r2.exec(s));    // null
+	
+console.log(r3.exec(s));    // [ 'aaa_', index: 0, input: 'aaa_aa_a', groups: undefined ]
+console.log(r3.exec(s));    // [ 'aa_', index: 4, input: 'aaa_aa_a', groups: undefined ]
+```
+
+使用lastIndex属性来说明y修饰符
+
+```
+const REGEX = /a/g;
+const strs = 'xaya';
+
+REGEX.lastIndex = 2;    // 指定从2号位置（y）开始匹配
+const match = REGEX.exec(strs);   // 匹配成功
+
+console.log(match.index);   // 3(在3号位置匹配成功)
+console.log(REGEX.lastIndex);   // 4 下一次匹配从4号位开始
+console.log(REGEX.exec(strs));  // null
+
+const REGEX1 = /a/y;
+
+REGEX1.lastIndex = 2;   // 指定从2号位置(y)开始匹配
+console.log(REGEX1.exec(strs));   // null 不是粘连，匹配失败
+
+REGEX1.lastIndex = 3;
+const match2 = REGEX1.exec(strs);
+
+console.log(match2.index);   // 3 (在3号位置匹配成功)
+console.log(REGEX1.lastIndex);   // 4 下一次匹配从4号位开始
+```
+
+**Notes**
+
+y修饰符的设计本意就是让头部匹配的标志(^)在全局匹配中都有效
+
+在split方法中使用y修饰符，原字符串必须以分隔符开头。这也就意味着，只要匹配成功，数组的第一个成员肯定是空字符串。后续的分隔符只有紧跟前面的分隔符才会被识别。
+
+```
+console.log('x##'.split(/#/y));   // [ 'x', '', '' ]
+console.log('##x'.split(/#/y));   // [ '', '', 'x' ]
+console.log('#x#'.split(/#/y));   // [ '', 'x', '' ]
+console.log('##'.split(/#/y));   // [ '', '', '' ]
+console.log('aaxa'.replace(/a/gy, '-'));  // --xa
+// 单独一个y修饰符对match方法只能返回第一个匹配
+console.log('a1a2a3'.match(/a\d/y));    // [ 'a1', index: 0, input: 'a1a2a3', groups: undefined ]
+console.log('a1a2a3'.match(/a\d/gy));    // [ 'a1', 'a2', 'a3' ]
+```
+
+### 4.4、sticky属性
+
+```
+var r = /hello\d/y;
+console.log(r.sticky);    // true(表示是否设置了y修饰符)
+```
+
+### 4.5、flags属性
+
+```
+console.log(/abc/ig.flags);     // gi(ES6的flags属性，返回正则表达式的修饰符)
+console.log(/abc/ig.source);    // abc(ES5的source属性，返回正则表达式的修饰符)
+```
+
+
+
+
+
+
+
 
 
 
