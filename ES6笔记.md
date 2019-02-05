@@ -1478,6 +1478,279 @@ foo.bind({}).name // "bound foo"
 
 ### 6.5、箭头函数
 
+- **基本用法**
+
+  ```
+  var f = v => v;
+  var f = () => 5;
+  var sum = (num1, num2) => num1 + num2;
+  var sum = (num1, num2) => { return num1 + num2; }
+  let getTempItem = id => ({ id: id, name: "Temp" });
+  
+  let fn = () => void doesNotReturn();
+  const full = ({ first, last }) => first + ' ' + last;
+  
+  const isEven = n => n % 2 === 0;
+  const square = n => n * n;
+  
+  [1,2,3].map(x => x * x);
+  var result = values.sort((a, b) => a - b);
+  
+  const numbers = (...nums) => nums;
+  
+  numbers(1, 2, 3, 4, 5)
+  // [1,2,3,4,5]
+  
+  const headAndTail = (head, ...tail) => [head, tail];
+  
+  headAndTail(1, 2, 3, 4, 5)
+  // [1,[2,3,4,5]]
+  ```
+
+- ***注意点***
+
+  - 函数体内的``this``对象，就是定义时所在的对象，而不是运行时所在的对象。
+
+  - 不可以当作构造函数，也就是说，不可以使用``new``命令，否则会抛错。
+  - 不可以使用``arguments``对象，该对象在函数体内不存在，可以使用``rest``代替。
+  - 不可以使用``yeild``命令，因此箭头函数不能作用于``Genertor``函数。
+
+  ```
+  function foo() {
+    setTimeout(() => {
+      console.log('id:', this.id);
+    }, 100);
+  }
+  
+  var id = 21;
+  
+  foo.call({ id: 42 }); // id: 42
+  ```
+
+- ***嵌套的箭头函数***
+
+  箭头函数内部还可以再使用箭头函数。
+
+  ```
+  const plus1 = a => a + 1;
+  const mult2 = a => a * 2;
+  
+  mult2(plus1(5))
+  // 12
+  ```
+
+### 6.6、绑定``this``
+
+箭头函数可以绑定``this``对象，大大减少了现实绑定``this``对象的写法(``call``、``apply``、``bind``)。但是，箭头函数并非适用于所有的场合，ES7提出了“函数绑定”运算符，用来取代``call``、``apply``、``bind``调用。``Babel``转码器已经支持。
+
+函数绑定运算符(::)，双冒号左边是一个对象，右边是一个函数。该运算符会自动将左边的对下岗作为上下文环境（``this``）绑定到右边的函数上。
+
+```
+foo::bar;
+// 等同于
+bar.bind(foo);
+
+foo::bar(...arguments);
+// 等同于
+bar.apply(foo, arguments);
+```
+
+### 6.7、尾调用优化
+
+- ***尾调用***：某个函数的最后一步是调用另一个函数。
+
+```
+function f(x){
+  return g(x);
+}
+
+// 以下三种情况都不属于尾调用
+// 情况一
+function f(x){
+  let y = g(x);
+  return y;
+}
+
+// 情况二
+function f(x){
+  return g(x) + 1;
+}
+
+// 情况三（等同于 g(x); return undefined）
+function f(x){
+  g(x);
+}
+
+// 尾调用不一定出现在函数尾部，只要是最后一步操作即可
+function f(x) {
+  if (x > 0) {
+    return m(x)
+  }
+  return n(x);
+}
+```
+
+----
+
+- ***尾调用优化***
+
+  ***调用帧***：函数调用会在内存中形成一个“调用记录”，又称“调用帧”，保存调用位置和内部变量等信息。
+
+  ***调用栈*** : 如果在函数A的内部调用函数B，那么在A的调用帧上方还会形成一个B的调用帧。等到B运行结束，将结果返回到A，B的调用帧才会消失。如果在函数B的内部还有一个函数C，那么就还有一个C的调用帧，以此类推。所有的调用帧就形成一个“调用栈”。
+
+  尾调用由于是函数的最后一步操作，所以不需要保留外层函数的调用帧，因为调用位置、内部变量等信息都不会再用到了，直接用内层函数的调用帧取代外层函数即可。
+
+```
+function f() {
+  let m = 1;
+  let n = 2;
+  return g(m + n);
+}
+f();
+
+// 等同于
+function f() {
+  return g(3);
+}
+f();
+
+// 等同于
+g(3);
+```
+
+**尾调用优化** ： 只保留内层函数的调用帧。
+
+***意义*** : 如果所有函数都是尾调用，那么完全可以做到每次执行时调用帧只有一项，这将大大节省内存。
+
+**注意** ：
+
+只有不再用到外层函数的内部变量，内层函数的调用帧才会取代外层函数的调用帧，否则无法进行“尾调用优化”。
+
+```
+// 不会进行尾调用优化，因为内层函数inner用到了外层函数的one 变量
+function addOne(a){
+  var one = 1;
+  function inner(b){
+    return b + one;
+  }
+  return inner(a);
+}
+```
+
+----
+
+- **尾递归**
+
+函数调用自身称为递归。如果尾调用自身就称为尾递归。
+
+递归非常耗内存，因为需要同时保存成千上万个调用帧，很容易发生“栈溢出”错误。但对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。
+
+```
+function factorial(n) {
+  if (n === 1) return 1;
+  return n * factorial(n - 1);
+};
+
+console.log(factorial(5));  // 120(O(n))
+
+function factorial1(n, total) {
+  if (n === 1) return total;
+  return factorial1(n - 1, n * total);
+}
+
+console.log(factorial1(5, 1));  // 120(O(1))
+```
+
+```
+function Fibonacci(n) {
+  if ( n <= 1) return 1;
+  return Fibonacci(n -1) + Fibonacci(n - 2);
+}
+
+console.log(Fibonacci(10));   // 89
+
+function Fibonacci1(n, ac1 = 1, ac2 = 1) {
+  if (n <= 1) return ac2;
+  return Fibonacci1(n - 1, ac2, ac1 + ac2);
+}
+
+console.log(Fibonacci1(10));  // 89
+console.log(Fibonacci1(100)); // 573147844013817200000
+console.log(Fibonacci1(1000));  // 7.0330367711422765e+208
+```
+
+-----
+
+- **递归函数的改写**
+
+  递归函数改成尾递归的实现方法：把所有用到的函数的内部变量改写成函数的参数。
+
+  缺点：不太直观
+
+  方法：
+
+  1、再尾递归函数之外，再提供一个正常形式的函数。
+
+  2、使用参数默认值。
+
+```
+function tailFactorial(n, total) {
+  if (n === 1) return total;
+  return tailFactorial(n - 1, n * total);
+}
+// 提供一个正常形式的函数
+function factorial(n) {
+  return tailFactorial(n, 1);
+}
+
+factorial(5) // 120
+
+// 采用默认值
+function factorial(n, total = 1) {
+  if (n === 1) return total;
+  return factorial(n - 1, n * total);
+}
+
+factorial(5) // 120
+```
+
+***总结***
+
+递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如Lua、ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归。
+
+----
+
+- ***严格模式***
+
+ES6的尾递归优化只在严格模式下开启，正常模式下是无效的（在正常模式下函数内部有两个变量，可以跟踪函数的调用栈）。
+
+ - ``func.arguments``返回调用时函数的参数。
+ - ``func.caller``返回调用当前函数的那个函数。
+
+严格模式下禁用这两个变量，所以尾调用模式仅在严格模式下生效。
+
+----
+
+### 6.8、函数参数的尾逗号
+
+ES2017中有一个提案：允许函数最后一个参数有尾逗号。
+
+```
+function clownsEverywhere(
+  param1,
+  param2,
+) { /* ... */ }
+
+clownsEverywhere(
+  'foo',
+  'bar',
+);
+```
+
+
+
+----
+
 
 
 
