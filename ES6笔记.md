@@ -1450,6 +1450,34 @@ const doSomething = (function () {
 
 ### 6.4、``name``属性
 
+函数的``name``属性，返回该函数的函数名。
+
+```
+function foo() {}
+foo.name // "foo"
+
+var f = function () {};
+
+// ES5
+f.name // ""
+// ES6
+f.name // "f"
+
+const bar = function baz() {};
+
+// ES5
+bar.name // "baz"
+// ES6
+bar.name // "baz"
+
+function foo() {};
+foo.bind({}).name // "bound foo"
+
+(function(){}).bind({}).name // "bound "
+```
+
+### 6.5、箭头函数
+
 
 
 
