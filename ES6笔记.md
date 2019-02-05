@@ -1228,6 +1228,230 @@ console.log(a **= 5); // 32
 
 - ***基本用法***
 
+  ```
+  function log(x, y = 'World') {
+    console.log(x, y);
+  }
+  
+  log('Hello') // Hello World
+  log('Hello', 'China') // Hello China
+  log('Hello', '') // Hello
+  
+  function Point(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
+  
+  const p = new Point();
+  p // { x: 0, y: 0 }
+  ```
+
+  **优点**
+
+  1、简洁
+
+  2、阅读代码的人可以立刻意识到哪些参数是可以省略的，不用查看函数体或文档
+
+  3、有利于将来代码优化，即使未来版本彻底去掉这个参数，也不会导致以前的代码无法运行
+
+  **限制**
+
+  1、参数变量是默认声明的，所以不能用let或const再次声明。
+
+  2、使用参数默认值时，函数不能有同名参数。
+
+  ```
+  function foo(x = 5) {
+    let x = 2;    // SyntaxError: Identifier 'x' has already been declared
+    const x = 2;
+  }
+  
+  function foo(x, x = 5, y = 1) {  
+  	// SyntaxError: Duplicate parameter name not allowed in this context
+  	// ...
+  }
+  ```
+
+  ***Notes***
+
+  参数默认值不是传值的，而是每次都重新计算默认值表达式的值（惰性求值）。
+
+  ```
+  let x = 99;
+  function foo(p = x + 1) {
+    console.log(p);
+  }
+  
+  foo() // 100
+  
+  x = 100;
+  foo() // 101
+  ```
+
+  上面代码中，参数p的默认值是``x + 1``。这时，每次调用函数foo都会重新计算``x + 1``,而不是默认``p``等于100。
+
+- ***与解构赋值默认值结合使用***
+
+```
+function foo({x, y = 5}) {
+  console.log(x, y);
+}
+
+foo({}) // undefined 5
+foo({x: 1}) // 1 5
+foo({x: 1, y: 2}) // 1 2
+foo() // TypeError: Cannot read property 'x' of undefined
+```
+
+- ***参数默认值的位置***
+
+  通常情况下，定义了默认值的参数应该是函数的尾参数。非尾部的参数设置默认值，实际上这个参数是无法省略的。
+
+```
+// 例一
+function f(x = 1, y) {
+  return [x, y];
+}
+
+f() // [1, undefined]
+f(2) // [2, undefined])
+f(, 1) // 报错
+f(undefined, 1) // [1, 1]
+
+// 例二
+function f(x, y = 5, z) {
+  return [x, y, z];
+}
+
+f() // [undefined, 5, undefined]
+f(1) // [1, 5, undefined]
+f(1, ,2) // 报错
+f(1, undefined, 2) // [1, 5, 2]
+
+function foo(x = 5, y = 6) {
+  console.log(x, y);
+}
+
+foo(undefined, null) // 5 null
+```
+
+- ***函数的``length``属性***
+
+  指定了默认值以后，函数的length属性将返回没有指定默认值的参数个数。
+
+```
+(function (a) {}).length // 1
+(function (a = 5) {}).length // 0
+(function (a, b, c = 5) {}).length // 2
+
+(function(...args) {}).length // 0
+
+// 设置的默认值的参数不是尾参数，那么length属性也不再计入后面的参数
+(function (a = 0, b, c) {}).length // 0
+(function (a, b = 1, c) {}).length // 1
+```
+
+- ***作用域***
+
+  一旦设置了参数的默认值，函数进行声明初始化时，参数会形成一个单独的作用域。等到初始化结束，这个作用域就会消失。这种语法行为在不设置参数默认值时是不会出现的。
+
+```
+var x = 1;
+
+function f(x, y = x) {
+  console.log(y);
+}
+
+f(2) // 2
+
+let x = 1;
+
+function f(y = x) {
+  let x = 2;
+  console.log(y);
+}
+
+f() // 1
+
+let foo = 'outer';
+
+function bar(func = () => foo) {
+  let foo = 'inner';
+  console.log(func());
+}
+
+bar(); // outer
+```
+
+- ***应用***
+
+  利用参数默认值，可以指定某一个参数不得省略，如果省略就抛出一个错误。
+
+  ```
+  function throwIfMissing() {
+    throw new Error('Missing parameter');
+  }
+  
+  function foo(mustBeProvided = throwIfMissing()) {
+    return mustBeProvided;
+  }
+  
+  foo() // Error: Missing parameter
+  ```
+
+### 6.2、``rest``参数
+
+ES6引入了``rest``参数（形式为“...变量名”）,这样就不需要``arguments``对象了。``rest``参数搭配的变量是一个数组，该变量将多余的参数放入其中。
+
+```
+function add(...values) {
+  let sum = 0;
+
+  for (var val of values) {
+    sum += val;
+  }
+
+  return sum;
+}
+
+add(2, 5, 3) // 10
+```
+
+***``Notes``***
+
+1、``rest``参数之后不能再有其他参数，否则会报错。
+
+2、函数的``length``属性不包括``rest``参数。
+
+### 6.3、严格模式
+
+ES6规定：只要函数参数使用了默认值、解构赋值或者扩展运算符，那么函数内部就不能显示设定为严格模式。（原因：函数内部的严格模式同样适用于函数体和函数参数）
+
+两种方法规避：
+
+1、设定全局性的严格模式。
+
+2、把函数包在一个无参数的的立即执行函数中。
+
+```
+'use strict';
+
+function doSomething(a, b = a) {
+  // code
+}
+
+const doSomething = (function () {
+  'use strict';
+  return function(value = 42) {
+    return value;
+  };
+}());
+```
+
+### 6.4、``name``属性
+
+
+
 
 
 
