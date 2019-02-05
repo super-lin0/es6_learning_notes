@@ -1211,6 +1211,23 @@ console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1)); // false
   Math.cbrt('hello') // NaN
   ```
 
+### 5.8、指数运算符
+
+ES2016新增了一个指数运算符(**)。
+
+```
+console.log(2 ** 3);  // 8
+console.log(2 ** 2);  // 4
+let a = 2;
+console.log(a **= 5); // 32
+```
+
+## 6、函数的扩展
+
+### 6.1、函数参数的默认值
+
+- ***基本用法***
+
 
 
 
