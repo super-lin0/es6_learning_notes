@@ -2017,6 +2017,59 @@ clownsEverywhere(
 
 ``Array.from()``方法用于将两类对象转换为真正的数组：类似数组的对象和可以遍历的对象。
 
+```
+let arrayLike = {
+  '0': 'a',
+  '1': 'b',
+  '2': 'c',
+  length: 3
+};
+
+console.log(Array.from(arrayLike));   // [ 'a', 'b', 'c' ]
+
+// 实际应用中，常见类似的数组的对象是DOM操作返回的NodeList集合，以及函数内部的arguments对象。
+// NodeList对象
+let ps = document.querySelectorAll('p');
+Array.from(ps).forEach(p => {
+  console.log(p);
+});
+
+// arguments对象
+function foo() {
+  var args = Array.from(arguments);
+  // ...
+}
+
+// 可遍历对象（部署Iterator接口）
+console.log(Array.from('Hello'));   // [ 'H', 'e', 'l', 'l', 'o' ]
+
+let namesSet = new Set(['a', 'b']);
+console.log(Array.from(namesSet));  // [ 'a', 'b' ]
+
+// 真正的数组
+console.log(Array.from([1, 2, 3]));   // [ 1, 2, 3 ]
+```
+
+类似数组的对象：本质特征只有一点，即必须有``length``属性。因此任何有``length``竖向的对象，都可以通过``Array.from()``方法转换为数组。
+
+```
+console.log(Array.from({length: 3})); // [ undefined, undefined, undefined ]
+```
+
+***Notes***
+
+``Array.from``接受第二个参数，类似于数组的``map``方法
+
+```
+console.log(Array.from([1, 2, 3], x => x * x)); // [ 1, 4, 9 ]
+// 等同于
+console.log(Array.from([1, 2, 3]).map(x => x * x)); // [ 1, 4, 9 ]
+
+Array.from([1, , 2, , 3], (n) => n || 0);	// [1, 0, 2, 0, 3]
+```
+
+
+
 
 
 
