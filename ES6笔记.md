@@ -1159,6 +1159,59 @@ console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1)); // false
 
 实际使用这个函数时，需要注意验证运算结果是否安全落在安全整数的范围内，另外不只验证运算结果，还要同时验证参与运算的每个值。
 
+### 5.7、Math对象的扩展
+
+- ***``Math.trunc()``***
+
+  ``Math.trunc``方法用于去除一个数的小数部分，（内部使用Number方法将其先转换为数值）。
+
+  ```
+  Math.trunc(4.1); // 4
+  Math.trunc(4.9); // 4
+  Math.trunc(-4.1); // -4
+  Math.trunc(-4.9); // -4
+  Math.trunc(-0.1234); // -0
+  
+  Math.trunc('123.456'); // 123
+  Math.trunc(true); //1
+  Math.trunc(false); // 0
+  Math.trunc(null); // 0
+  
+  Math.trunc(NaN);      // NaN
+  Math.trunc('foo');    // NaN
+  Math.trunc();         // NaN
+  Math.trunc(undefined) // NaN
+  ```
+
+- ***``Math.sign()``***
+
+  ``Math.sign``方法用来判断一个数到底是正数、负数，还是零（对于非数值，会将其先转换为数值）。
+
+  1、参数为整数，返回``+1``
+
+  2、参数为负数，返回``-1``
+
+  3、参数为``0``，返回``0``
+
+  4、参数为``-0``，返回``-0``
+
+  5、其他值，返回``NaN``
+
+- **``Math.cbrt()``**
+
+  ``Math.cbrt``方法用于计算一个数的立方根（对于非数值，``Math.cbrt``方法内部先使用``Number``方法转换为数值）。
+
+  ```
+  Math.cbrt(-1) // -1
+  Math.cbrt(0)  // 0
+  Math.cbrt(1)  // 1
+  Math.cbrt(2)  // 1.2599210498948734
+  
+  Math.cbrt('8') // 2
+  Math.cbrt('hello') // NaN
+  ```
+
+
 
 
 
