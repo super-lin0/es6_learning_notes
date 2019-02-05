@@ -9,7 +9,11 @@ typora-copy-images-to: imgs
 
 ## 1、let 和const
 
+-----
+
 ### 1.1、let命令
+
+--------
 
 - **基本用法**
 
@@ -99,6 +103,8 @@ a[6]();		//6
 - **不允许重复声明**
 
   let不允许在相同的作用域内重复声明同一个变量。
+
+--------
 
 ### 1.2、块级作用域
 
@@ -220,6 +226,8 @@ a[6]();		//6
 
   变量x会得到整个块级作用域的返回值。（提案）
 
+----------------------
+
 ### 1.3、const命令
 
 - **基本用法**
@@ -271,6 +279,8 @@ a[6]();		//6
 
   var、function、let、const、import、class
 
+-------------------------------
+
 ### 1.4、顶层对象的属性
 
 从ES6开始，全局变量将逐步与顶层对象的属性隔离
@@ -287,7 +297,11 @@ console.log(window.b);  // undefined
 
 ​	ES6一方面规定，为了保持兼容性，var命令和function命令声明的全局变量依旧是顶层对象的属性；另一方面规定，let、const、class命令声明的全局变量不属于顶层对象的属性。
 
+----------------------
+
 ## 2、变量的解构赋值
+
+----------------------------
 
 ### 2.1、数组的解构赋值
 
@@ -394,6 +408,8 @@ Generator函数具有原生的Iterator接口。
 
   3、默认值可以引用解构赋值的其他变量，但该变量必须已经声明。
 
+----------
+
 ### 2.2、对象的解构赋值
 
 数组元素是按照次序排列的，变量的取值由它的位置决定的；而对象的属性没有次序，变量必须与属性同名才能取到正确的值。
@@ -485,6 +501,8 @@ const {o = 2} = {o: null};
 console.log(o)    // null
 ```
 
+--------------------
+
 ### 2.3、字符串的解构赋值
 
 ```
@@ -495,6 +513,8 @@ log(a, b, c, d, e);   // H e l l o
 const { length: len } = 'Hello';
 log(len);   // 5
 ```
+
+----------------------------------------
 
 ### 2.4、数值和布尔值的解构赋值
 
@@ -519,6 +539,8 @@ console.log(a);   // TypeError: Cannot destructure property `prop` of 'undefined
 let {prop: b} = null;
 console.log(b);   // TypeError: Cannot destructure property `prop` of 'undefined' or 'null'.
 ```
+
+--------------------------------------
 
 ### 2.5、函数参数的解构赋值
 
@@ -545,6 +567,8 @@ print(move())     // 0
 
 [1, undefined, 3].map((x = 'yes') => x);  // [ 1, 'yes', 3 ]
 ```
+
+-----------------------------
 
 ### 2.6、圆括号的问题
 
@@ -672,6 +696,8 @@ print(move())     // 0
     import React, {Component} from 'react';
     ```
 
+-----------------------------------
+
 ## 3、字符串的扩展
 
 ### 3.1、字符串的遍历接口
@@ -684,6 +710,8 @@ for(let a of s) {
   console.log(a);
 }
 ```
+
+--------------------------
 
 ### 3.2、includes(), startsWith(), endsWith()
 
@@ -711,6 +739,8 @@ console.log(str.includes('o W', 5));   // false
 
 第二个参数表示开始搜索的位置
 
+-------------------
+
 ### 3.3、repeat()
 
 repeat()方法返回一个新字符串，表示将原字符串重复n次
@@ -729,6 +759,8 @@ print('na'.repeat('3')); // nanana
 print('na'.repeat(Infinity));   // RangeError: Invalid count value
 print('na'.repeat(-1));   // RangeError: Invalid count value
 ```
+
+-------------------------------
 
 ### 3.4 、padStart()、padEnd()
 
@@ -760,6 +792,8 @@ print('12'.padStart(10, 'YYYY-MM-DD'));   // YYYY-MM-12
 print('09-12'.padStart(10, 'YYYY-MM-DD'));  // YYYY-09-12
 ```
 
+--------------------------------
+
 ### 3.5、模板字符串
 
 ​	模板字符串（template string）是增强版的字符串，用反引号（`）标识。它可以当作普通字符串使用，也可以用来定义多行字符串，或者在字符串中嵌入变量。
@@ -790,7 +824,11 @@ $('#list').html(`
 `.trim());
 ```
 
+---------------------
+
 ## 4、正则表达式
+
+-------------------------------
 
 ### 4.1、RegExp构造函数
 
@@ -832,6 +870,8 @@ ES5中，RegExp构造函数的参数有两种情况:
   console.log(regex1.flags);    // i
   ```
 
+-------------------
+
 ### 4.2、字符串的正则方法
 
 字符串对象共有4个方法可以使用正则表达式：matchs()、replace()、search()、split()。ES6使这4个方法在语言内部全部调用RegExp的实例方法，从而做奥所有与正则相关的方法都定义在RegExp对象上。
@@ -840,6 +880,8 @@ ES5中，RegExp构造函数的参数有两种情况:
 - `String.prototype.replace` 调用 `RegExp.prototype[Symbol.replace]`
 - `String.prototype.search` 调用 `RegExp.prototype[Symbol.search]`
 - `String.prototype.split` 调用 `RegExp.prototype[Symbol.split]`
+
+----------------------------------
 
 ### 4.3、y修饰符
 
@@ -904,6 +946,8 @@ console.log('a1a2a3'.match(/a\d/y));    // [ 'a1', index: 0, input: 'a1a2a3', gr
 console.log('a1a2a3'.match(/a\d/gy));    // [ 'a1', 'a2', 'a3' ]
 ```
 
+-----------------
+
 ### 4.4、sticky属性
 
 ```
@@ -911,12 +955,16 @@ var r = /hello\d/y;
 console.log(r.sticky);    // true(表示是否设置了y修饰符)
 ```
 
+-------------------
+
 ### 4.5、flags属性
 
 ```
 console.log(/abc/ig.flags);     // gi(ES6的flags属性，返回正则表达式的修饰符)
 console.log(/abc/ig.source);    // abc(ES5的source属性，返回正则表达式的修饰符)
 ```
+
+------------------
 
 ### 4.6、s修饰符
 
@@ -931,7 +979,9 @@ console.log(re.dotAll);   // true
 console.log(re.flags);    // s
 ```
 
-### 4.6、具名组匹配
+------------------------
+
+### 4.7、具名组匹配
 
 - ***简介***
 
@@ -1014,7 +1064,11 @@ console.log(matchObj.day);   // 01
   console.log(RE_TWICE.test('abc!abc!abe'));  // false
   ```
 
+------------------------------------
+
 ## 5、数值的扩展
+
+------------------
 
 ### 5.1、二进制和八进制表示法
 
@@ -1028,6 +1082,8 @@ console.log(0o767);     // 503
 console.log(Number('0b111'));   // 7
 console.log(Number('0o10'));    // 8
 ```
+
+-------------------------
 
 ### 5.2、Number.isFinite()、Number.isNaN()
 
@@ -1053,6 +1109,8 @@ console.log(Number.isNaN('true' / 0)); // true
 console.log(Number.isNaN('true' / 'true')); // true
 ```
 
+----------------------------
+
 ### 5.3、Number.parseInt()、Number.parseFloat()
 
 ES6 将全局方法`parseInt()`和`parseFloat()`，移植到`Number`对象上面，行为完全保持不变。
@@ -1073,6 +1131,8 @@ Number.parseFloat === parseFloat // true
 ***Notes***
 
 这样做的目的是，逐步减少全局方法，使得语言逐步模块化。
+
+-----------------------
 
 ### 5.4、Number.isInteger()
 
@@ -1098,6 +1158,8 @@ console.log(Number.isInteger(5E-325)); // true
 
 鉴于以上两种情况，如果对数据精度要求较高，不建议使用``Number.isInteger()``来判断一个数是否是整数。
 
+---------------
+
 ### 5.5、Number.EPSILON
 
 ES6在Number对象上面新增一个极小的常量``Number.EPSILON``，目的在于为浮点数计算设置一个误差范围，我们知道浮点数计算是不精确的。但是如果这个误差能够小于``Number.EPSILON``，我们就可以认为得到了正确结果。因此，``Number.EPSILON``的实质是一个可接受的误差范围。
@@ -1115,6 +1177,8 @@ function withErrorMargin (left, right) {
 console.log(withErrorMargin(0.1 + 0.2, 0.3));   // true
 console.log(withErrorMargin(0.2 + 0.2, 0.3));   // false
 ```
+
+---------------------
 
 ### 5.6、安全整数和``Number.isSafeInteger()``
 
@@ -1158,6 +1222,8 @@ console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1)); // false
 **Notes**
 
 实际使用这个函数时，需要注意验证运算结果是否安全落在安全整数的范围内，另外不只验证运算结果，还要同时验证参与运算的每个值。
+
+----------------------------
 
 ### 5.7、Math对象的扩展
 
@@ -1211,6 +1277,8 @@ console.log(Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1)); // false
   Math.cbrt('hello') // NaN
   ```
 
+--------------
+
 ### 5.8、指数运算符
 
 ES2016新增了一个指数运算符(**)。
@@ -1222,7 +1290,11 @@ let a = 2;
 console.log(a **= 5); // 32
 ```
 
+--------------------------
+
 ## 6、函数的扩展
+
+-------------------------
 
 ### 6.1、函数参数的默认值
 
@@ -1399,6 +1471,8 @@ bar(); // outer
   foo() // Error: Missing parameter
   ```
 
+------------------
+
 ### 6.2、``rest``参数
 
 ES6引入了``rest``参数（形式为“...变量名”）,这样就不需要``arguments``对象了。``rest``参数搭配的变量是一个数组，该变量将多余的参数放入其中。
@@ -1422,6 +1496,8 @@ add(2, 5, 3) // 10
 1、``rest``参数之后不能再有其他参数，否则会报错。
 
 2、函数的``length``属性不包括``rest``参数。
+
+----------------------------------
 
 ### 6.3、严格模式
 
@@ -1447,6 +1523,8 @@ const doSomething = (function () {
   };
 }());
 ```
+
+--------------------------
 
 ### 6.4、``name``属性
 
@@ -1475,6 +1553,8 @@ foo.bind({}).name // "bound foo"
 
 (function(){}).bind({}).name // "bound "
 ```
+
+------------------------
 
 ### 6.5、箭头函数
 
@@ -1539,6 +1619,8 @@ foo.bind({}).name // "bound foo"
   // 12
   ```
 
+---------------------
+
 ### 6.6、绑定``this``
 
 箭头函数可以绑定``this``对象，大大减少了现实绑定``this``对象的写法(``call``、``apply``、``bind``)。但是，箭头函数并非适用于所有的场合，ES7提出了“函数绑定”运算符，用来取代``call``、``apply``、``bind``调用。``Babel``转码器已经支持。
@@ -1554,6 +1636,8 @@ foo::bar(...arguments);
 // 等同于
 bar.apply(foo, arguments);
 ```
+
+----------------------------
 
 ### 6.7、尾调用优化
 
