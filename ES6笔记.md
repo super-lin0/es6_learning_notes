@@ -1835,6 +1835,187 @@ clownsEverywhere(
 
 ----
 
+## 7、数组的扩展
+
+----------
+
+### 7.1、扩展运算符
+
+- ***含义***
+
+  扩展运算符是三个点(...)，它将一个数组转为用逗号分隔的参数序列。
+
+  ```
+  console.log(...[1, 2, 3]) // 1 2 3
+  
+  console.log(1, ...[2, 3, 4], 5) // 1 2 3 4 5
+  
+  [...document.querySelectorAll('div')] // [<div>, <div>, <div>]
+  
+  function f(v, w, x, y, z) { }
+  const args = [0, 1];
+  f(-1, ...args, 2, ...[3]);
+  
+  (...[1, 2]) // Uncaught SyntaxError: Unexpected number
+  
+  console.log((...[1, 2])) // Uncaught SyntaxError: Unexpected number
+  
+  console.log(...[1, 2]) // 1 2
+  ```
+
+  ***Notes***
+
+  扩展运算符如果放在括号中，JavaScript引擎就会认为这是函数调用。
+
+- ***替代函数的``apply``方法***
+
+  由于扩展运算符可以展开数组，所以不再需要使用``apply``方法将数组转为函数的参数。
+
+  ```
+  // ES5 的写法
+  function f(x, y, z) {
+    // ...
+  }
+  var args = [0, 1, 2];
+  f.apply(null, args);
+  
+  // ES6的写法
+  function f(x, y, z) {
+    // ...
+  }
+  let args = [0, 1, 2];
+  f(...args);
+  
+  // ES5 的写法
+  Math.max.apply(null, [14, 3, 77])
+  
+  // ES6 的写法
+  Math.max(...[14, 3, 77])
+  
+  // 等同于
+  Math.max(14, 3, 77);
+  
+  // ES5的 写法
+  var arr1 = [0, 1, 2];
+  var arr2 = [3, 4, 5];
+  Array.prototype.push.apply(arr1, arr2);
+  
+  // ES6 的写法
+  let arr1 = [0, 1, 2];
+  let arr2 = [3, 4, 5];
+  arr1.push(...arr2);
+  
+  // ES5
+  new (Date.bind.apply(Date, [null, 2015, 1, 1]))
+  // ES6
+  new Date(...[2015, 1, 1]);
+  ```
+
+- ***扩展运算符的应用***
+
+  1、复制数组
+
+  ```
+  const a1 = [1, 2];
+  // 写法一
+  const a2 = [...a1];
+  // 写法二
+  const [...a2] = a1;
+  ```
+
+  2、合并数组
+
+  ```
+  const arr1 = ['a', 'b'];
+  const arr2 = ['c'];
+  const arr3 = ['d', 'e'];
+  
+  // ES5 的合并数组
+  arr1.concat(arr2, arr3);
+  // [ 'a', 'b', 'c', 'd', 'e' ]
+  
+  // ES6 的合并数组
+  [...arr1, ...arr2, ...arr3]
+  // [ 'a', 'b', 'c', 'd', 'e' ]
+  ```
+
+  3、与解构赋值结合
+
+  ```
+  const [first, ...rest] = [1, 2, 3, 4, 5];
+  first // 1
+  rest  // [2, 3, 4, 5]
+  
+  const [first, ...rest] = [];
+  first // undefined
+  rest  // []
+  
+  const [first, ...rest] = ["foo"];
+  first  // "foo"
+  rest   // []
+  
+  // 扩展运算符用于数组赋值，只能放到参数最后一位
+  const [...butLast, last] = [1, 2, 3, 4, 5]; // 报错
+  
+  const [first, ...middle, last] = [1, 2, 3, 4, 5]; // 报错
+  ```
+
+  4、函数的返回值
+
+  ```
+  // 从数据库取出一行数据，通过扩展运算符，直接将其传入构造函数Date
+  var dateFields = readDateFields(database);
+  var d = new Date(...dateFields);
+  ```
+
+  5、字符串
+
+  ​	将字符串转换为真正的数组。
+
+  ```
+  console.log([...'hello']);  // [ 'h', 'e', 'l', 'l', 'o' ]
+  ```
+
+
+
+  6、实现了``Iterator``接口的对象
+
+  ​	任何定义了遍历器(``Iterator``)接口的对象，都可以用扩展运算符转换为真正的数组。
+
+  ```
+  let nodeList = document.querySelectorAll('div');
+  let array = [...nodeList];
+  ```
+
+
+
+  7、``Map``和``Set``结构、``Generator``函数
+
+  ​	扩展运算符内部调用的是数据结构的``Iterator``接口，因此只要具有``Iterator``接口的对象，都可以使用扩展运算符。
+
+  ```
+  let map = new Map([
+    [1, 'one'],
+    [2, 'two'],
+    [3, 'three'],
+  ]);
+  
+  let arr = [...map.keys()];
+  console.log(arr);   // [ 1, 2, 3 ]
+  
+  // Generator函数运行后会返回一个遍历器对象，因此可以使用扩展运算符。
+  const go = function*() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+  
+  console.log([...go()]);   // [ 1, 2, 3 ]
+  ```
+
+### 7.2、``Array.from()``
+
+``Array.from()``方法用于将两类对象转换为真正的数组：类似数组的对象和可以遍历的对象。
 
 
 
