@@ -2091,7 +2091,55 @@ Array.of(1, 2) // [1, 2]
 
 ### 7.4、数组实例的``copyWithin()``
 
+数组实例的``copyWithin``方法会在当前数组内部将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。
 
+- ``Array.prototype.copyWithin(target, start = 0, end = this.length)``
+
+  ``target``： 从该位置开始替换数组
+
+  ``start``(可选)：从该位置开始读取数据，默认为0，如果为负值，表示倒数。
+
+  ``end``（可选）：到该位置前停止读取数据，默认等于数组长度。如果为负值，表示倒数。
+
+```
+[1, 2, 3, 4, 5].copyWithin(0, 3) // [4, 5, 3, 4, 5]
+console.log([1, 2, 3, 4, 5].copyWithin(0, 3, 4));   // [ 4, 2, 3, 4, 5 ]
+console.log([1, 2, 3, 4, 5].copyWithin(0, -2, -1));   // [ 4, 2, 3, 4, 5 ]
+```
+
+------------------
+
+### 7.5、数组实例的``find()``和``findIndex()``方法
+
+``find()``：找出第一个符合条件的数组成员，参数为一个回调函数，所有数组成员依次执行该回调，知道找到第一个返回值为``true``的成员，然后返回该成员，若无则返回``undefined``;
+
+``findIndex()``：返回第一个符合条件的数组成员的位置，若无，则返回``-1``。
+
+```
+console.log([1, 4, -5, 10].find((n) => n < 0));   // -5
+console.log([1, 5, 10, 15].find(value => value > 9)) // 10
+console.log([1, 5, 10, 15].findIndex(value => value > 9));  // 2
+```
+
+--------------
+
+### 7.6、数组实例的``fill()``
+
+``fill()``：使用给定值填充一个数组，（第二个参数和第三个参数表示填充的起始和结束位置）。
+
+```
+console.log(['a', 'b', 'c'].fill(7));   // [ 7, 7, 7 ]
+console.log(new Array(3).fill(7));    // [ 7, 7, 7 ]
+console.log(['a', 'b', 'c'].fill(7, 1, 2));    // [ 'a', 7, 'c' ]
+
+let arr = new Array(3).fill({name: 'zhangsan'});
+arr[0].name = 'lisi';
+console.log(arr);   // [ { name: 'lisi' }, { name: 'lisi' }, { name: 'lisi' } ]
+```
+
+**``Notes``**
+
+如果填充类型为对象，那么被赋值的是同一个内存地址的对象，而不是深拷贝对象。
 
 
 
