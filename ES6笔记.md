@@ -2141,6 +2141,74 @@ console.log(arr);   // [ { name: 'lisi' }, { name: 'lisi' }, { name: 'lisi' } ]
 
 如果填充类型为对象，那么被赋值的是同一个内存地址的对象，而不是深拷贝对象。
 
+-----------------------
+
+### 7.7、数组实例的``entries()``、``keys()``、``values()``
+
+ES6提供了三个新的方法 -------- ``entries()``、``keys()``、``values()``,用于遍历数组。他们都返回一个遍历器对象，可用``for...of``循环遍历。
+
+``entries()``：对键值对的遍历。
+
+``keys()``：对键名的遍历。
+
+``values()``：对键值的遍历。
+
+```
+for(let index of ['a', 'b'].keys()) {
+  console.log(index);
+}
+// 0 1
+
+for(let item of ['a', 'b'].values()) {
+  console.log(item);
+}
+// a b
+
+for(let [index, item] of ['a', 'b'].entries()) {
+  console.log(index, item);
+}
+// 0 'a'
+// 1 'b'
+
+let letter = ['a', 'b', 'c'];
+let entrie = letter.entries();
+
+console.log(entrie.next().value);   // [ 0, 'a' ]
+console.log(entrie.next().value);   // [ 1, 'b' ]
+console.log(entrie.next().value);   // [ 2, 'c' ]
+```
+
+-------------------------------
+
+### 7.8、数组实例的``includes()``
+
+``Array.prototype.includes``方法返回一个布尔值，表示某个数组是否包含给定的值，与字符串的``includes``方法类似。
+
+第二个参数表示搜索的起始位置，默认为``0``。（如果为负，则表示倒数的位置，如果大于数组长度，则会重置为0开始）。
+
+```
+console.log(['1', '2', '3'].includes('1'));   // true
+console.log(['1', '2', '3'].includes(1));   // false
+console.log(['1', '2', '3'].includes('4'));   // false
+console.log(['1', '2', NaN].includes(NaN));   // true
+
+console.log([1, 2, 3, 4, 5].includes(1, 1));  // false
+console.log([1, 2, 1, 3, 4, 5].includes(5, -1));  // false
+console.log([1, 2, 1, 3, 4, 5].includes(1, -7));  // true
+
+console.log([NaN].includes(NaN));   // true
+```
+
+``indexOf``方法有两个缺点：
+
+1、不够语义化，其含义是找到参数值的第一个出现的位置，所以要比较是否不等于``-1``，表达起来不够直观。
+
+2、内部使用严格相等运算符(===)进行判断，会导致``NaN``的误判。
+
+
+
+
+
 
 
 
