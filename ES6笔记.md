@@ -2205,6 +2205,50 @@ console.log([NaN].includes(NaN));   // true
 
 2、内部使用严格相等运算符(===)进行判断，会导致``NaN``的误判。
 
+-------------------
+
+### 7.9、数组的空位
+
+数组的空位指数组的某一个位置没有任何值（空位不是``undefined``，一个位置的值等于``undefined``依然是有值的。空位是没有任何值的）。
+
+```
+console.log(new Array(3));    // [ <3 empty items> ]
+console.log(0 in [undefined, undefined, undefined]);    // true
+console.log(0 in [,,,]);    // false
+```
+
+ES5对空位的处理：
+
+1、``forEach()``、``filter()``、``every()``、``some()``都会跳过空位。
+
+2、``map()``会跳过空位，但会保留这个值。
+
+3、``join()``和``toString()``会将空位视为``undefined``，而``undefined``和``null``会被处理成空字符串。
+
+````
+[, 1].forEach(x => console.log(x));   // 1
+[1, , 3].filter(x => console.log(x)); // 1 3
+[,, 'a'].every(x => console.log(x === 'a'));  // true
+console.log([,, 'a'].map(x => x = 1));  // [ <2 empty items>, 1 ]
+````
+
+ES6明确将空位转为``undefined``
+
+```
+console.log(Array.from([1, , 3]));    // [ 1, undefined, 3 ]
+console.log([...[1, , 3]]);   // [ 1, undefined, 3 ]
+console.log([, 'a', 'b',,].copyWithin(2, 0));   // [ <1 empty item>, 'a', <1 empty item>, 'a' ]
+console.log(new Array(3).fill('a'));    // [ 'a', 'a', 'a' ]
+
+for(let i of [,, 3]) {
+  console.log(i);   // undefined undefined 3
+}
+```
+
+**``Notes``**
+
+由于空位的处理规则非常不统一，所以建议避免出现空位。
+
 
 
 
