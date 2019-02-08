@@ -2249,6 +2249,185 @@ for(let i of [,, 3]) {
 
 由于空位的处理规则非常不统一，所以建议避免出现空位。
 
+-----
+
+## 8、对象的扩展
+
+### 8.1、属性的简洁表示法
+
+ES6允许直接写入变量和函数作为对象的属性和方法。(ES6允许在对象中只写属性名，不写属性值。这时，属性值等于属性名所代表的变量)
+
+```
+const foo = 'bar';
+const baz = {foo};
+baz // {foo: "bar"}
+
+// 等同于
+const baz = {foo: foo};
+
+function f(x, y) {
+  return {x, y};
+}
+
+// 等同于
+function f(x, y) {
+  return {x: x, y: y};
+}
+
+f(1, 2) // Object {x: 1, y: 2}
+
+const o = {
+  method() {
+    return "Hello!";
+  }
+};
+
+// 等同于
+const o = {
+  method: function() {
+    return "Hello!";
+  }
+};
+
+let birth = '2001/09/01';
+
+let obj = {
+  name: 'zhangsan',
+  birth,
+  sayHi() {
+    console.log('Hello World');
+  }
+}
+```
+
+用于函数的返回值。
+
+```
+function getPoint() {
+  const x = 0;
+  const y = 1;
+  return {x, y};
+}
+
+console.log(getPoint());    // { x: 0, y: 1 }
+```
+
+属性的``getter()``和``setter()``。
+
+```
+const cart = {
+  _wheels: 4,
+  get wheels() {
+    return this._wheels;
+  },
+  set wheels(values) {
+    if(values < this._wheels) {
+      throw new Error('数值太小了!');
+    }
+    this._wheels = values;
+  }
+}
+```
+
+**``Notes``**
+
+简洁写法中属性名总是字符串。
+
+```
+const obj = {
+  class () {}
+};
+
+// 等同于
+
+var obj = {
+  'class': function() {}
+};
+
+// 如果某个方法的值是一个 Generator 函数，前面需要加上星号。
+const obj = {
+  * m() {
+    yield 'hello world';
+  }
+};
+```
+
+------------------------------
+
+### 8.2、属性名表达式
+
+JavaScript语言定义对象的属性有两种方式。
+
+1、直接使用标识符作为属性名。
+
+2、用表达式作为属性名，这时要将表达式放在括号内。
+
+```
+// 方法一
+obj.foo = true;
+
+// 方法二
+obj['a' + 'bc'] = 123;
+```
+
+ES6允许字面量定义对象时使用方法二（表达式作为的对象的属性），即把表达式放在方括号内。
+
+```
+let propKey = 'foo';
+let propObj = {
+  [propKey]: true,
+  ['a' + 'bc']: 123
+}
+console.log(propObj);   // { foo: true, abc: 123 }
+
+let lastName = 'lisi';
+const aPerson = {
+  'first name': 'Hello',
+  [lastName]: 'lisi'
+}
+
+console.log(aPerson);   // { 'first name': 'Hello', lisi: 'lisi' }
+
+let funcObj = {
+  ['say' + 'Hi']() {
+    console.log("Hello World");
+  }
+}
+
+funcObj.sayHi();    // Hello World
+```
+
+**Notes**
+
+属性名表达式如果是一个对象，默认情况下会自动将对象转换为字符串``[object Object]``。
+
+```
+// 报错
+const foo = 'bar';
+const bar = 'abc';
+const baz = { [foo] };
+
+// 正确
+const foo = 'bar';
+const baz = { [foo]: 'abc'};
+
+const keyA = {a: 1};
+const keyB = {b: 2};
+
+const myObject = {
+  [keyA]: 'valueA',
+  [keyB]: 'valueB'
+};
+
+myObject // Object {[object Object]: "valueB"}
+```
+
+------------
+
+### 8.3、方法的``name``属性
+
+函数的``name``属性返回函数名。对象方法也是函数，因此也有``name``属性。
+
 
 
 
