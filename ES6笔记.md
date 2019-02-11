@@ -2428,7 +2428,7 @@ myObject // Object {[object Object]: "valueB"}
 
 函数的``name``属性返回函数名。对象方法也是函数，因此也有``name``属性。
 
-
+------------
 
 
 
