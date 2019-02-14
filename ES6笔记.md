@@ -2428,7 +2428,26 @@ myObject // Object {[object Object]: "valueB"}
 
 函数的``name``属性返回函数名。对象方法也是函数，因此也有``name``属性。
 
-------------
+```
+const person = {
+  sayName() {
+    console.log('Hello');
+  }
+}
+
+console.log(person.sayName.name);   // sayName
+```
+
+### 8.4、``Object.is()``
+
+用来比较两个值是否严格相等，与严格相等运算符(===)行为基本一致
+
+```
+console.log(Object.is('foo', 'foo'));   // true
+console.log(Object.is({}, {}));     // false
+console.log(Object.is(+0, -0));     // false
+console.log(Object.is(NaN, NaN));   // true
+```
 
 
 
