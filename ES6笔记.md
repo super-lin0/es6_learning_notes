@@ -2438,6 +2438,8 @@ const person = {
 console.log(person.sayName.name);   // sayName
 ```
 
+--------------------
+
 ### 8.4、``Object.is()``
 
 用来比较两个值是否严格相等，与严格相等运算符(===)行为基本一致
@@ -2449,6 +2451,139 @@ console.log(Object.is(+0, -0));     // false
 console.log(Object.is(NaN, NaN));   // true
 ```
 
+--------------------------
+
+### 8.5 ``Object.assign()``
+
+``Object.assign()``方法用来将源对象的所有可枚举属性，复制到目标对象上。
+
+```
+var target = {a: 1};
+var source = {b: 1};
+var source2 = {c: 1};
+
+// 基本用法
+Object.assign(target, source, source2);
+console.log(target);  // { a: 1, b: 1, c: 1 }
+
+// 只有一个参数的情况
+target = {a: 1};
+console.log(Object.assign(target));   // { a: 1 }
+
+// 对于不是对象的属性先转换成对象
+console.log(typeof Object.assign(2));   // object
+console.log(Object.assign(undefined));   // Cannot convert undefined or null to object
+console.log(Object.assign(null));   // Cannot convert undefined or null to object
+
+// 源对象不是对象的情况
+console.log(Object.assign({a: 1}, undefined));  // { a: 1 }
+console.log(Object.assign({a: 1}, null));   // { a: 1 }
+console.log(Object.assign({a: 1}, 2));  // { a: 1 }
+console.log(Object.assign({a: 1}, 'str'));   // { '0': 's', '1': 't', '2': 'r', a: 1 }
+
+// 原因：只有字符串的包装对象，会产生可枚举的属性
+const v1 = 'abc';
+const v2 = true;
+const v3 = 10;
+console.log(Object.assign({}, v1, v2, v3));   // { '0': 'a', '1': 'b', '2': 'c' }
+
+var target = {a: 1, b: 2};
+var source = {b: 1};
+var source2 = {c: 1};
+
+// 重复属性
+Object.assign(target, source, source2);
+console.log(target);  // { a: 1, b: 1, c: 1 }
+
+// 不可枚举的属性和继承的属性不会被复制
+const source3 = {};
+Object.assign(target, Object.defineProperty(source3, 'invisible', {
+  enumerable: false,
+  value: 'hello'
+}));
+
+console.log(target);    // { a: 1, b: 1, c: 1 }
+console.log(source3);   // {}
+
+// 属性名为Symbol值的属性
+target = {a: 'b'};
+Object.assign(target, {[Symbol('c')]: 'd'})
+console.log(target);    // { a: 'b', [Symbol(c)]: 'd' }
+```
+
+**注意点**
+
+``Object.assign``方法属于浅拷贝，而不是深拷贝。也就是说，如果源对象的某个属性是对象，那么目标对象拷贝得到的是这个对象的引用。
+
+```
+// 对于嵌套的对象，直接覆盖
+target = {a: {b: 'c', d: 'e'}};
+source = {a: {f: 'Hello'}};
+
+Object.assign(target, source);
+console.log(target);    // { a: { f: 'Hello' } }
+```
+
+**用途**
+
+- 为对象添加属性
+
+  ```
+  class Point {
+    constructor(x, y) {
+      Object.assign(this, {x, y});
+    };
+  };
+  
+  const p = new Point(1, 2);
+  console.log(p);   // Point { x: 1, y: 2 }
+  ```
+
+- 为对象添加方法
+
+  ```
+  Object.assign(Point.prototype, {
+    getAge() {
+      return 12;
+    }
+  });
+  
+  // 等同于
+  // Point.prototype.getAge = function() {return 12};
+  
+  console.log(p.getAge());    // 12
+  ```
+
+- 克隆对象
+
+  ```
+  function clone(origin) {
+    return Object.assign({}, origin);
+  }
+  
+  console.log(clone(p));    // { x: 1, y: 2, age: 12 }
+  ```
+
+- 合并多个对象
+
+  ```
+  const merge = (target, ...source) => Object.assign(target, ...source);
+  
+  const merge1 = (...source) => Object.assign({}, ...source);
+  ```
+
+- 为属性指定默认值
+
+  ```
+  const DEFAULT = {
+    logLevel: 0,
+    outputFormat: 'html'
+  }
+  
+  const processContent = (options) => Object.assign({}, DEFAULT, options);
+  
+  console.log(processContent());    // { logLevel: 0, outputFormat: 'html' }
+  ```
 
 
 
