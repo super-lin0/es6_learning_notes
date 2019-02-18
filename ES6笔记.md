@@ -2585,6 +2585,79 @@ console.log(target);    // { a: { f: 'Hello' } }
   console.log(processContent());    // { logLevel: 0, outputFormat: 'html' }
   ```
 
+---------------
+
+### 8.6、属性的可枚举性
+
+对象的每一个属性都具有一个描述对象，用于控制该属性的行为。``Object.getOwnPropertyDescriptor``方法可以获得该属性的描述对象。
+
+```
+var obj = {foo: 123};
+console.log(Object.getOwnPropertyDescriptor(obj, 'foo'));
+
+//{ value: 123,
+// writable: true,
+// enumerable: true,
+// configurable: true }
+```
+
+对象的``enumerable``属性称为“可枚举性”，如果该属性为``false``，就表示某些操作会忽略当前属性。
+
+以下操作会忽略``enumerable``为``false``的属性。
+
+- ``for...in()``：只遍历对象自身的和继承的可枚举属性。
+- ``Object.keys()``：返回对象自身的所有可枚举属性的键值。
+- ``JSON.stringify()``：只串行化对象自身的可枚举属性。
+- ``Object.assign()``：会忽略``enumrable``为``false``的属性，只复制对象自身的可枚举的属性。
+
+**``Notes``**
+
+最初引入``enumrable``的目的就是为了让某些属性规避掉``for...in``操作。例如对象原型的``toString``和``length``属性。
+
+例如，对象的``toString``方法和数组的``length``属性就是通过这种方法不会被``for...in``遍历到。
+
+```
+const test1 = Object.getOwnPropertyDescriptor(Object.prototype, 'toString').enumerable;
+console.log(test1);   // false
+
+const test2 = Object.getOwnPropertyDescriptor([], 'length').enumerable;
+console.log(test2);   // false
+
+// 另外，所有Class的原型的方法都是不可枚举的。
+const test2 = Object.getOwnPropertyDescriptor([], 'length').enumerable;
+console.log(test2);   // false
+```
+
+**总结**
+
+操作中引入继承的属性会让问题复杂化，大多数时候，我们只关心对象自身的属性。所以，尽量不要使用``for...in``循环，而用``Object.keys()``代替。
+
+-----------------------
+
+### 8.7、属性的遍历
+
+``ES6``一共有5种方法可以遍历对象的属性。
+
+- ``for...in``：遍历自身的和继承的可枚举属性(不含``Symbol``属性)。
+- ``Object.keys(obj)``：返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含``Symbol``属性）。
+- ``Object.getOwnPropertyNames(obj)``：返回一个数组，包含对象自身的所有属性（不含``Symbol``,含不可枚举属性）。
+- ``Object.getOwnPropertySymbols(obj)``：返回一个数组，包含对象自身所有的``Symbol``属性。
+- ``Reflect.ownKeys(obj)``：返回一个数组，包含对象自身的所有属性（包括``Symbol``属性和不可枚举属性）。
+
+**遍历次序规则**
+
+- 首先遍历所有属性名为数值的属性，按照数字排序。
+- 遍历所有属性名为字符串的属性，按照生成时间排序。
+- 遍历所有属性名为``Symbol``值的属性，按照生成时间排序。
+
+```
+const arr = Reflect.ownKeys({[Symbol()]: 0, b: 0, 10: 0, 2: 0, a: 0});
+console.log(arr);   // [ '2', '10', 'b', 'a', Symbol() ]
+```
+
+
+
+
 
 
 
