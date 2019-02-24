@@ -2657,6 +2657,81 @@ console.log(arr);   // [ '2', '10', 'b', 'a', Symbol() ]
 
 --------
 
+### 8.8、``__proto__属性``
+
+``__proto__``属性用来读取或设置当前对象的``prototype``对象。
+
+```
+var obj = {
+    method() {
+        console.log('hello');
+    }
+}
+
+obj.__proto__ = somOtherObj;
+```
+
+**Notes**
+
+该属性没有写入ES6正文，只是写入了附录，本质上是一个内部属性，而不是一个正式的对外的API。**建议不要使用这个属性**。而是使用``Object.setPrototypeOf()``、``Object.getPrototypeOf()``或``Object.create()``来代替。
+
+- ``Object.setPrototypeOf()``
+
+  此方法的作用与``__proto__``相同，用来设置一个对象的``prototype``对象，返回参数对象本身。
+
+```
+// 用法
+Object.setPrototypeOf(object, prototype);
+
+var o = Object.setPrototypeOf({}, null);
+
+let proto = {};
+let obj = { x: 10 };
+Object.setPrototypeOf(obj, proto);
+
+proto.z = 20;
+proto.y = 40;
+
+console.log(obj.x); // 10
+console.log(obj.y); // 40
+console.log(obj.z); // 20
+
+// 对于第一个参数不是对象的，先转换为对象，无法转换的则报错
+console.log(Object.setPrototypeOf(1, {}) === 1);    // true
+console.log(Object.setPrototypeOf('foo', {}) === 'foo');    // true
+console.log(Object.setPrototypeOf(true, {}) === true);  // true
+console.log(Object.setPrototypeOf(null, {}));   // TypeError: Object.setPrototypeOf called on null or undefined
+console.log(Object.setPrototypeOf(undefined, {}));  // TypeError: Object.setPrototypeOf called on null or undefined
+```
+
+- ``Object.getPrototype()``
+
+  该方法用于读取一个对象的``prototype``对象。
+
+```
+function Rectangle() {}
+
+var rec = new Rectangle();
+
+console.log(Object.getPrototypeOf(rec) === Rectangle.prototype);    // true
+Object.setPrototypeOf(rec, Object.prototype);
+console.log(Object.getPrototypeOf(rec) === Rectangle.prototype);    // false
+
+// 如果参数不是对象，则会自动转换为对象
+console.log(Object.getPrototypeOf(1));  // [Number: 0]
+console.log(Object.getPrototypeOf('foo'));  // [String: '']
+console.log(Object.getPrototypeOf(true));   // [Boolean: false]
+console.log(Object.getPrototypeOf(1) === Number.prototype); // true
+console.log(Object.getPrototypeOf('foo') === String.prototype); // true
+console.log(Object.getPrototypeOf(true) === Boolean.prototype); // true
+
+// 如果参数无法转换为对象，则直接报错
+Object.getPrototypeOf(null);    // TypeError: Cannot convert undefined or null to object
+Object.getPrototypeOf(undefined); // TypeError: Cannot convert undefined or null to object
+```
+
+
+
 
 
 
