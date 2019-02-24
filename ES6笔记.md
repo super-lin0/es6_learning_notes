@@ -2730,7 +2730,30 @@ Object.getPrototypeOf(null);    // TypeError: Cannot convert undefined or null t
 Object.getPrototypeOf(undefined); // TypeError: Cannot convert undefined or null to object
 ```
 
+### 9.9、对象的遍历
 
+- ``Object.keys()``:返回一个数组，包括参数对象自身的所有可遍历属性的键名（不含继承的，ES5）。
+
+  **ES7提案**：``Object.values()``、``Object.entries()``作为遍历一个对象的补充手段，供``for...of``循环使用。
+
+  ```
+  let {keys, values, entries} = Object;
+  let obj1 = {x: 1, y: 2, z: 3};
+  
+  for(let key of keys(obj1)) {
+      console.log(key);   // x y z
+  }
+  
+  for(let value of values(obj1)) {
+      console.log(value);     // 1 2 3
+  }
+  
+  for(let [key, value] of entries(obj1)) {
+      console.log([key, value]);      //  ['x', 1 ] [ 'y', 2 ] [ 'z', 3 ]
+  }
+  ```
+
+  
 
 
 
