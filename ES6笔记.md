@@ -2753,11 +2753,68 @@ Object.getPrototypeOf(undefined); // TypeError: Cannot convert undefined or null
   }
   ```
 
+- ``Object.values``方法返回一个数组，包括参数对象（不含继承的）的所有可遍历属性的键值。
+
+  ```
+  let obj = {foo: 43, bar: '123'};
   
+  console.log(Object.values(obj));    // [ 43, '123' ]
+  
+  obj = { 100: 'a', 2: 'b', 7: 'c' };
+  console.log(Object.values(obj));    // [ 'b', 'c', 'a' ]
+  
+  // 只返回对象可遍历的属性
+  obj = Object.create({}, {
+      p: {
+          value: 42,
+          enumerable: true
+      }
+  });
+  
+  console.log(Object.values(obj));    // [ 42 ]
+  
+  // 如果不是对象则转换为对象（数值和布尔值的包装类型都不会为实例添加非继承的属性）
+  console.log(Object.values('foo'));  // [ 'f', 'o', 'o' ]
+  console.log(Object.values(true));   // []
+  console.log(Object.values(42));     // []
+  ```
 
+- ``Object.entries``方法返回一个数组，包括对象自身的（不含继承的）所有可遍历的属性的键值对数组。
 
+  ```
+  let obj = {foo: 43, bar: '123'};
+  console.log(Object.entries(obj));   // [ [ 'foo', 43 ], [ 'bar', '123' ] ]
+  
+  obj = {one: 1, two: 2};
+  
+  for(let [key, value] of Object.entries(obj)) {
+      console.log(key, value);    // one 1    two 2
+  }
+  
+  // 将对象转换为真正的``Map``结构
+  const map = new Map(Object.entries(obj));
+  console.log(map);   // Map { 'one' => 1, 'two' => 2 }
+  
+  // 自己实现``Object.entries``方法
+  function* entries(obj) {
+      for(let key of Object.keys(obj)) {
+          yield [key, obj[key]];
+      }
+  }
+  
+  function entries(obj) {
+      let arr = [];
+  
+      for(let key of Object.keys(obj)) {
+          arr.push([key, obj[key]]);
+      }
+  
+      return arr;
+  }
+  
+  ```
 
-
+  
 
 
 
