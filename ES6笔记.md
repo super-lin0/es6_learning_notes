@@ -2730,7 +2730,9 @@ Object.getPrototypeOf(null);    // TypeError: Cannot convert undefined or null t
 Object.getPrototypeOf(undefined); // TypeError: Cannot convert undefined or null to object
 ```
 
-### 9.9、对象的遍历
+-------------
+
+### 8.9、对象的遍历
 
 - ``Object.keys()``:返回一个数组，包括参数对象自身的所有可遍历属性的键名（不含继承的，ES5）。
 
@@ -2814,7 +2816,110 @@ Object.getPrototypeOf(undefined); // TypeError: Cannot convert undefined or null
   
   ```
 
-  
+  --------
+
+### 8.10、``super``关键字
+
+ES6新增``super``关键字，指向当前对象的原型对象。
+
+```
+const proto = {
+    foo: 'Hello'
+};
+
+const obj = {
+    foo: 'world',
+    find() {
+        return super.foo;
+    }
+};
+
+Object.setPrototypeOf(obj, proto);
+console.log(obj.find());    // Hello
+```
+
+**Notes**
+
+``super``关键字表示原型对象时，只能用在对象的方法中，用在其他地方会报错。
+
+```
+// 报错
+const obj = {
+  foo: super.foo
+}
+
+// 报错
+const obj = {
+  foo: () => super.foo
+}
+
+// 报错
+const obj = {
+  foo: function () {
+    return super.foo
+  }
+}
+```
+
+-------------------
+
+### 8.11、对象的扩展运算符
+
+- 解构赋值
+
+  对象的解构赋值用于从一个对象取值，相当于将所有可遍历的，但尚未被读取的属性，分配到指定的对象上。所有的键和他们的值，都会被拷贝到新对象上。
+
+```
+const { x, y, ...z} = {x: 0, y: 1, a: '1', b: '2'};
+
+console.log(x);     // 0
+console.log(y);     // 1
+console.log(z);     // { a: '1', b: '2' }
+```
+
+**Notes**
+
+1、对象右边要求是一个等号，若为``undefined``或``null``就会报错。
+
+2、解构赋值必须是最后一个参数，否则会报错。
+
+3、解构赋值的拷贝是浅拷贝，如果一个键的值是复合类型的值（数组、函数、对象），那么解构赋值拷贝的是这个对象的引用。而不是这个值的副本。
+
+4、扩展运算符的解构赋值，不能复制继承自原型对象的属性。
+
+5、变量声明语句之中，如果使用解构赋值，扩展运算符后面必须是一个变量名，而不能是一个解构赋值表达式。
+
+```
+let { x, y, ...z } = null; // 运行时错误
+let { x, y, ...z } = undefined; // 运行时错误
+
+let { ...x, y, z } = someObject; // 句法错误
+let { x, ...y, ...z } = someObject; // 句法错误
+
+obj = {a: {b: 1}};
+let {...c} = obj;
+
+obj.a.b = 2;
+console.log(c.a.b); // 2
+
+let o1 = { a: 1};
+let o2 = { b: 2};
+o2.__proto__ = o1;
+let {...o3} = o2;
+
+console.log(o3);    // { b: 2 }
+console.log(o3.a); // undefined
+
+const o = Object.create({ x: 1, y: 2});
+o.z = 3;
+
+let { x, ...newObj } = o;
+let { y, z} = newObj;
+
+console.log(x, y, z);   // 1 undefined 3
+```
+
+
 
 
 
